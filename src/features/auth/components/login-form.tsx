@@ -1,0 +1,83 @@
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { CircleAlertIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
+import { applyServerErrors } from "@/lib/forms"
+import { safeRedirectPath } from "@/lib/routes"
+
+import { useSignIn } from "../queries"
+import { loginFormSchema, type LoginFormValues } from "../schemas"
+
+export function LoginForm() {
+  const router = useRouter()
+  const signIn = useSignIn()
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: { email: "", password: "" },
+  })
+  const { errors, isSubmitting } = form.formState
+
+  const onSubmit = form.handleSubmit(async (credentials) => {
+    try {
+      await signIn.mutateAsync(credentials)
+    } catch (error) {
+      applyServerErrors(form, error)
+      return
+    }
+    // The page stays mounted (hidden) after navigation, so drop the typed password.
+    form.reset()
+    // Read on submit rather than via useSearchParams, which keeps the page fully static.
+    const next = new URLSearchParams(window.location.search).get("next")
+    router.replace(safeRedirectPath(next))
+  })
+
+  return (
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
+      {errors.root?.server && (
+        <Alert variant="destructive">
+          <CircleAlertIcon />
+          <AlertDescription>{errors.root.server.message}</AlertDescription>
+        </Alert>
+      )}
+
+      <FieldGroup>
+        <Field data-invalid={Boolean(errors.email)}>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="username"
+            aria-invalid={Boolean(errors.email)}
+            {...form.register("email")}
+          />
+          <FieldError errors={[errors.email]} />
+        </Field>
+
+        <Field data-invalid={Boolean(errors.password)}>
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <Input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            aria-invalid={Boolean(errors.password)}
+            {...form.register("password")}
+          />
+          <FieldError errors={[errors.password]} />
+        </Field>
+      </FieldGroup>
+
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting && <Spinner />}
+        Sign in
+      </Button>
+    </form>
+  )
+}
