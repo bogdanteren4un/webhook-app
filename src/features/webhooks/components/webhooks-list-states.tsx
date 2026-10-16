@@ -1,4 +1,4 @@
-import { CircleAlertIcon, SearchXIcon, WebhookIcon } from "lucide-react"
+import { SearchXIcon, WebhookIcon } from "lucide-react"
 import Link from "next/link"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -62,25 +62,6 @@ export function PageOutOfRange({ lastPage, search }: { lastPage: number; search:
         >
           Go to the last page
         </Link>
-      </EmptyContent>
-    </Empty>
-  )
-}
-
-export function WebhooksLoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
-  return (
-    <Empty className="border">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <CircleAlertIcon />
-        </EmptyMedia>
-        <EmptyTitle>Could not load webhooks</EmptyTitle>
-        <EmptyDescription>{message}</EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" onClick={onRetry}>
-          Try again
-        </Button>
       </EmptyContent>
     </Empty>
   )

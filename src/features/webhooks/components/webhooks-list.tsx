@@ -3,6 +3,7 @@
 import { CircleAlertIcon } from "lucide-react"
 import { useCallback } from "react"
 
+import { LoadError } from "@/components/load-error"
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
@@ -11,12 +12,7 @@ import { getErrorMessage } from "@/lib/api/errors"
 import { useWebhookList } from "../queries"
 import type { Webhook, WebhookList } from "../schemas"
 import { useWebhookListParams } from "../hooks/use-webhook-list-params"
-import {
-  NoSearchResults,
-  NoWebhooks,
-  PageOutOfRange,
-  WebhooksLoadError,
-} from "./webhooks-list-states"
+import { NoSearchResults, NoWebhooks, PageOutOfRange } from "./webhooks-list-states"
 import { WebhooksPagination } from "./webhooks-pagination"
 import { WebhooksSearch } from "./webhooks-search"
 import { WebhooksTable, WebhooksTableSkeleton } from "./webhooks-table"
@@ -45,7 +41,11 @@ export function WebhooksList() {
 
       {!data ? (
         isError ? (
-          <WebhooksLoadError message={getErrorMessage(error)} onRetry={retry} />
+          <LoadError
+            title="Could not load webhooks"
+            message={getErrorMessage(error)}
+            onRetry={retry}
+          />
         ) : (
           <WebhooksTableSkeleton />
         )
