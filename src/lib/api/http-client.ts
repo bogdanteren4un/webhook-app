@@ -30,7 +30,8 @@ const CSRF_PROTECTED_METHODS: ReadonlySet<HttpMethod> = new Set(["POST", "PUT"])
  * - fetches the CSRF token before the first request and sends it on POST and PUT;
  * - on 419 refreshes the token and retries the request once;
  * - on 401 rotates the session once for all concurrent requests and retries once;
- * - ends the local session when the rotate fails or the retry gets 401 again.
+ * - ends the local session when the rotate fails or the retry gets 401 again;
+ *   from then on protected requests fail without reaching the network.
  */
 export class HttpClient {
   private csrfToken: Promise<string> | null = null
@@ -60,8 +61,7 @@ export class HttpClient {
 
     for (;;) {
       init.signal?.throwIfAborted()
-      // After the session ended, protected requests fail without hitting the network.
-      if (auth && this.sessionEnded) throw new SessionExpiredError()
+      if (auth && this.sessionEnded) throw this.loseSession()
 
       const csrfToken = this.getCsrfToken()
       const csrfTokenValue = await csrfToken
@@ -75,10 +75,7 @@ export class HttpClient {
       }
 
       if (response.status === 401 && auth) {
-        if (authRetried) {
-          this.expireSession()
-          throw new SessionExpiredError()
-        }
+        if (authRetried) throw this.loseSession()
         authRetried = true
         await this.refreshSession(epoch)
         continue
@@ -100,7 +97,11 @@ export class HttpClient {
     this.sessionEnded = true
   }
 
-  /** Subscribes to an involuntary end of the session. Returns an unsubscribe function. */
+  /**
+   * Called whenever a protected request is rejected for lack of a session: the rotate
+   * failed, the retry got 401 again, or the session had already ended (e.g. after logout,
+   * when the user navigates back). Listeners must be idempotent. Returns an unsubscribe.
+   */
   onSessionExpired(listener: () => void): () => void {
     this.sessionExpiredListeners.add(listener)
     return () => {
@@ -152,16 +153,16 @@ export class HttpClient {
         body: { fingerprint: this.options.getFingerprint() },
       })
     } catch {
-      this.expireSession()
-      throw new SessionExpiredError()
+      throw this.loseSession()
     }
     this.sessionEpoch += 1
   }
 
-  private expireSession(): void {
-    if (this.sessionEnded) return
+  /** Ends the session, notifies the listeners and returns the error to reject with. */
+  private loseSession(): SessionExpiredError {
     this.sessionEnded = true
     for (const listener of this.sessionExpiredListeners) listener()
+    return new SessionExpiredError()
   }
 
   private send(

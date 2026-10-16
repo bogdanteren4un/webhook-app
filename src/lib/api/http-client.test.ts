@@ -80,7 +80,7 @@ describe("HttpClient", () => {
     expect(onSessionExpired).not.toHaveBeenCalled()
   })
 
-  it("ends the session once when the rotate fails", async () => {
+  it("ends the session when the rotate fails and fails later requests fast", async () => {
     // No login: the mock has no session, so rotate answers 400.
     const { client, onSessionExpired } = createClient()
     const requestsTo = countRequests()
@@ -97,9 +97,11 @@ describe("HttpClient", () => {
     expect(requestsTo("/auth/token/rotate")).toBe(1)
     expect(onSessionExpired).toHaveBeenCalledOnce()
 
-    // Further protected requests fail fast without reaching the network.
+    // Later protected requests skip the network but still report the missing session,
+    // e.g. when the user navigates back to a protected page.
     await expect(client.request("GET", "/v1/me")).rejects.toBeInstanceOf(SessionExpiredError)
     expect(requestsTo("/v1/me")).toBe(1)
+    expect(onSessionExpired).toHaveBeenCalledTimes(2)
   })
 
   it("refetches the CSRF token on 419 and retries the request once", async () => {
