@@ -1,4 +1,6 @@
-import { createParser, createSerializer, parseAsString, useQueryStates } from "nuqs"
+// `nuqs/server` holds the isomorphic parsers: unlike the `nuqs` entry (a client module),
+// it can be evaluated in server components that import these helpers.
+import { createParser, createSerializer, parseAsString } from "nuqs/server"
 
 import { routes } from "@/lib/routes"
 
@@ -17,11 +19,6 @@ const parseAsPage = createParser({
 export const webhookListParsers = {
   page: parseAsPage.withDefault(1),
   search: parseAsString.withDefault(""),
-}
-
-export function useWebhookListParams() {
-  // Every committed change is a history entry, so back/forward walks through them.
-  return useQueryStates(webhookListParsers, { history: "push" })
 }
 
 // Default values (page 1, empty search) are left out of the URL.
