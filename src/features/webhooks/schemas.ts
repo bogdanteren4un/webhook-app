@@ -25,20 +25,17 @@ export type WebhookListParams = {
   search: string
 }
 
-function isHttpUrl(value: string): boolean {
-  if (!URL.canParse(value)) return false
-  const { protocol } = new URL(value)
-  return protocol === "http:" || protocol === "https:"
-}
+/** Route param of the edit page: a positive integer, anything else is "not found". */
+export const webhookIdSchema = z.coerce.number().int().positive()
 
-/** Mirrors the server rules for instant feedback; the server stays the source of truth. */
+/**
+ * The client only checks required fields, for instant feedback. Format rules (an
+ * http/https URL, the name length) belong to the server: its 422 messages are shown
+ * next to the fields, and the rules cannot drift between client and server.
+ */
 export const webhookFormSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(255, "Name is too long"),
-  url: z
-    .string()
-    .trim()
-    .min(1, "URL is required")
-    .refine(isHttpUrl, "Enter a valid http:// or https:// URL"),
+  name: z.string().trim().min(1, "Name is required"),
+  url: z.string().trim().min(1, "URL is required"),
 })
 
 export type WebhookFormValues = z.infer<typeof webhookFormSchema>
