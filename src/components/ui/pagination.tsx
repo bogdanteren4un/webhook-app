@@ -2,7 +2,7 @@ import * as React from "react"
 import { cn } from "cn"
 import Link from "next/link"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
@@ -36,22 +36,17 @@ type PaginationLinkProps = {
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
   React.ComponentProps<typeof Link>
 
+// A link styled as a button rather than a Button rendering a link: Base UI's Button
+// adds role="button", which hides the navigation semantics from assistive tech.
+// next/link keeps page changes client-side (a plain <a> reloads the document).
 function PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps) {
   return (
-    <Button
-      variant={isActive ? "outline" : "ghost"}
-      size={size}
-      className={cn(className)}
-      nativeButton={false}
-      render={
-        // next/link keeps page changes client-side (a plain <a> reloads the document).
-        <Link
-          aria-current={isActive ? "page" : undefined}
-          data-slot="pagination-link"
-          data-active={isActive}
-          {...props}
-        />
-      }
+    <Link
+      aria-current={isActive ? "page" : undefined}
+      data-slot="pagination-link"
+      data-active={isActive}
+      className={cn(buttonVariants({ variant: isActive ? "outline" : "ghost", size }), className)}
+      {...props}
     />
   )
 }
