@@ -1,5 +1,6 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 import { routes } from "@/lib/routes"
 
@@ -38,16 +39,24 @@ export function useSignIn() {
   })
 }
 
+/** Signs out locally even if the revoke request fails; the login page clears the cache. */
 export function useSignOut() {
-  const queryClient = useQueryClient()
   const router = useRouter()
 
   return useMutation({
     mutationFn: revokeSession,
-    // Sign out locally even if the revoke request fails.
-    onSettled: () => {
-      router.replace(routes.login)
-      queryClient.clear()
-    },
+    onSettled: () => router.replace(routes.login),
   })
+}
+
+/**
+ * Drops every cached query and mutation of the previous session. Meant for the login
+ * page: by the time it shows, the protected pages are hidden and no longer observe
+ * their queries, so clearing does not trigger refetches there.
+ */
+export function useClearSessionData() {
+  const queryClient = useQueryClient()
+  useEffect(() => {
+    queryClient.clear()
+  }, [queryClient])
 }

@@ -11,8 +11,9 @@ import { loginPath, routes } from "@/lib/routes"
 import { authKeys } from "../queries"
 
 /**
- * Reacts to a session the API client could not restore: sends the user to the
- * login page with a link back to the current URL and drops all cached user data.
+ * Sends the user to the login page, with a way back to the current URL, whenever a
+ * protected request finds no valid session. The login page then drops cached data.
+ * May fire several times in a row (one per rejected request), so it is idempotent.
  */
 export function SessionExpiryListener() {
   const router = useRouter()
@@ -21,13 +22,13 @@ export function SessionExpiryListener() {
   useEffect(
     () =>
       apiClient.onSessionExpired(() => {
-        const wasSignedIn = queryClient.getQueryData(authKeys.me) !== undefined
         const { pathname, search } = window.location
+        if (pathname === routes.login) return
 
-        if (pathname !== routes.login) router.replace(loginPath(`${pathname}${search}`))
-        queryClient.clear()
-
-        if (wasSignedIn) toast.info("Your session has expired. Please sign in again.")
+        router.replace(loginPath(`${pathname}${search}`))
+        if (queryClient.getQueryData(authKeys.me)) {
+          toast.info("Your session has expired. Please sign in again.", { id: "session-expired" })
+        }
       }),
     [queryClient, router],
   )

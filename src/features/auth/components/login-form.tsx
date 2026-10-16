@@ -13,10 +13,13 @@ import { Spinner } from "@/components/ui/spinner"
 import { applyServerErrors } from "@/lib/forms"
 import { safeRedirectPath } from "@/lib/routes"
 
-import { useSignIn } from "../queries"
+import { useClearSessionData, useSignIn } from "../queries"
 import { loginFormSchema, type LoginFormValues } from "../schemas"
 
 export function LoginForm() {
+  // Arriving here after sign-out, an expired session or a direct visit:
+  // no data of a previous session may survive in the cache.
+  useClearSessionData()
   const router = useRouter()
   const signIn = useSignIn()
   const form = useForm<LoginFormValues>({
