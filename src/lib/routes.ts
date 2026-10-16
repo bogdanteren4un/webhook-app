@@ -1,6 +1,7 @@
 export const routes = {
   login: "/login",
   webhooks: "/webhooks",
+  webhook: (id: number) => `/webhooks/${id}`,
 } as const
 
 /** Login URL that brings the user back to `returnTo` after signing in. */
