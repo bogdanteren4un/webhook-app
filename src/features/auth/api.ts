@@ -36,6 +36,14 @@ export async function revokeSession() {
   }
 }
 
+/**
+ * Subscribes to the loss of the session: a failed rotate, a repeated 401, or a protected
+ * request after sign-out. May fire once per rejected request. Returns an unsubscribe.
+ */
+export function onSessionExpired(listener: () => void) {
+  return apiClient.onSessionExpired(listener)
+}
+
 export function fetchMe(signal?: AbortSignal) {
   return apiClient.request("GET", "/v1/me", { schema: meSchema, signal })
 }

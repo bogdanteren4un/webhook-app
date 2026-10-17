@@ -3,9 +3,9 @@ import { useNavigate } from "react-router"
 import { useEffect } from "react"
 import { toast } from "sonner"
 
-import { apiClient } from "@/lib/api/client"
 import { loginPath, routes } from "@/lib/routes"
 
+import { onSessionExpired } from "../api"
 import { authKeys } from "../queries"
 
 /**
@@ -19,7 +19,7 @@ export function SessionExpiryListener() {
 
   useEffect(
     () =>
-      apiClient.onSessionExpired(() => {
+      onSessionExpired(() => {
         const { pathname, search } = window.location
         if (pathname === routes.login) return
 
