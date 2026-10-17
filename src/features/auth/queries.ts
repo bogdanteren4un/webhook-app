@@ -51,8 +51,9 @@ export function useSignOut() {
 
 /**
  * Drops every cached query and mutation of the previous session. Meant for the login
- * page: by the time it shows, the protected pages are hidden and no longer observe
- * their queries, so clearing does not trigger refetches there.
+ * page: by the time it mounts, the protected pages have unmounted and no longer observe
+ * their queries. Clearing earlier (e.g. right after navigate() on sign-out) could make a
+ * still-mounted page refetch, fail and redirect again with a stale ?next.
  */
 export function useClearSessionData() {
   const queryClient = useQueryClient()

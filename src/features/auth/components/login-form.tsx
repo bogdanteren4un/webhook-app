@@ -36,8 +36,6 @@ export function LoginForm() {
       applyServerErrors(form, error)
       return
     }
-    // The page stays mounted (hidden) after navigation, so drop the typed password.
-    form.reset()
     void navigate(safeRedirectPath(searchParams.get("next")), { replace: true })
   })
 

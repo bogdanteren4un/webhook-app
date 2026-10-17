@@ -32,15 +32,12 @@ export function WebhookEditForm({ webhook, backHref }: WebhookEditFormProps) {
   const { errors, isDirty, isSubmitting } = form.formState
 
   const onSubmit = form.handleSubmit(async (values) => {
-    let saved: Webhook
     try {
-      saved = await updateWebhook.mutateAsync({ id: webhook.id, values })
+      await updateWebhook.mutateAsync({ id: webhook.id, values })
     } catch (error) {
       applyServerErrors(form, error)
       return
     }
-    // The page stays mounted (hidden) after navigation: the saved values become the baseline.
-    form.reset({ name: saved.name, url: saved.url })
     toast.success("Webhook saved")
     void navigate(backHref)
   })
