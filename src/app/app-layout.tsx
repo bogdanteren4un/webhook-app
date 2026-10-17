@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { Outlet } from "react-router"
 
 import { AppHeader } from "@/components/app-header"
 
@@ -8,11 +8,13 @@ import { AppHeader } from "@/components/app-header"
  * (see SessionExpiryListener). Pages render right away and show their own
  * loading states, so /v1/me and page data load in parallel.
  */
-export default function AppLayout({ children }: { children: ReactNode }) {
+export function AppLayout() {
   return (
     <>
       <AppHeader />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
+        <Outlet />
+      </main>
     </>
   )
 }

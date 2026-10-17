@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlertIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -20,7 +20,7 @@ export function LoginForm() {
   // Arriving here after sign-out, an expired session or a direct visit:
   // no data of a previous session may survive in the cache.
   useClearSessionData()
-  const router = useRouter()
+  const navigate = useNavigate()
   const signIn = useSignIn()
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -39,7 +39,7 @@ export function LoginForm() {
     form.reset()
     // Read on submit rather than via useSearchParams, which keeps the page fully static.
     const next = new URLSearchParams(window.location.search).get("next")
-    router.replace(safeRedirectPath(next))
+    void navigate(safeRedirectPath(next), { replace: true })
   })
 
   return (

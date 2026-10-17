@@ -1,8 +1,7 @@
 "use client"
 
 import { ArrowLeftIcon, SearchXIcon } from "lucide-react"
-import Link from "next/link"
-import { useParams } from "next/navigation"
+import { Link, useParams } from "react-router"
 
 import { LoadError } from "@/components/load-error"
 import { Badge } from "@/components/ui/badge"
@@ -44,7 +43,7 @@ export function EditWebhook() {
   return (
     <div className="flex flex-col gap-4">
       <Link
-        href={backHref}
+        to={backHref}
         className={buttonVariants({ variant: "ghost", size: "sm", className: "self-start" })}
       >
         <ArrowLeftIcon />
@@ -120,7 +119,7 @@ function WebhookNotFound({ backHref }: { backHref: string }) {
         <EmptyDescription>It may have been deleted, or the link is wrong.</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Link href={backHref} className={buttonVariants({ variant: "outline" })}>
+        <Link to={backHref} className={buttonVariants({ variant: "outline" })}>
           Back to webhooks
         </Link>
       </EmptyContent>

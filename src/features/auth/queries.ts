@@ -1,5 +1,5 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { useNavigate } from "react-router"
 import { useEffect } from "react"
 
 import { routes } from "@/lib/routes"
@@ -41,11 +41,11 @@ export function useSignIn() {
 
 /** Signs out locally even if the revoke request fails; the login page clears the cache. */
 export function useSignOut() {
-  const router = useRouter()
+  const navigate = useNavigate()
 
   return useMutation({
     mutationFn: revokeSession,
-    onSettled: () => router.replace(routes.login),
+    onSettled: () => navigate(routes.login, { replace: true }),
   })
 }
 

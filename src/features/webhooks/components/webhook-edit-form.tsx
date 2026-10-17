@@ -2,8 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlertIcon } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { Link, useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -24,7 +23,7 @@ type WebhookEditFormProps = {
 }
 
 export function WebhookEditForm({ webhook, backHref }: WebhookEditFormProps) {
-  const router = useRouter()
+  const navigate = useNavigate()
   const updateWebhook = useUpdateWebhook()
   const form = useForm<WebhookFormValues>({
     resolver: zodResolver(webhookFormSchema),
@@ -43,7 +42,7 @@ export function WebhookEditForm({ webhook, backHref }: WebhookEditFormProps) {
     // The page stays mounted (hidden) after navigation: the saved values become the baseline.
     form.reset({ name: saved.name, url: saved.url })
     toast.success("Webhook saved")
-    router.push(backHref)
+    void navigate(backHref)
   })
 
   return (
@@ -88,7 +87,7 @@ export function WebhookEditForm({ webhook, backHref }: WebhookEditFormProps) {
           {isSubmitting && <Spinner />}
           Save changes
         </Button>
-        <Link href={backHref} className={buttonVariants({ variant: "outline" })}>
+        <Link to={backHref} className={buttonVariants({ variant: "outline" })}>
           Cancel
         </Link>
       </div>

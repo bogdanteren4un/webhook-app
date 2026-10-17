@@ -1,5 +1,5 @@
 import { SearchXIcon, WebhookIcon } from "lucide-react"
-import Link from "next/link"
+import { Link } from "react-router"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -57,7 +57,7 @@ export function PageOutOfRange({ lastPage, search }: { lastPage: number; search:
       </EmptyHeader>
       <EmptyContent>
         <Link
-          href={webhookListHref({ page: lastPage, search })}
+          to={webhookListHref({ page: lastPage, search })}
           className={buttonVariants({ variant: "outline" })}
         >
           Go to the last page

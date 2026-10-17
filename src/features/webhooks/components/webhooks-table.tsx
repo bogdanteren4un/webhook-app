@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "react-router"
 
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -41,7 +41,7 @@ export function WebhooksTable({ webhooks, listParams }: WebhooksTableProps) {
         {webhooks.map((webhook) => (
           <TableRow key={webhook.id}>
             <TableCell className="truncate font-medium">
-              <Link href={webhookEditHref(webhook.id, listParams)} className="hover:underline">
+              <Link to={webhookEditHref(webhook.id, listParams)} className="hover:underline">
                 {webhook.name}
               </Link>
             </TableCell>

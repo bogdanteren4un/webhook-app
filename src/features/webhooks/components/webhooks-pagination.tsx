@@ -31,7 +31,7 @@ export function WebhooksPagination({ page, lastPage, search }: WebhooksPaginatio
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={webhookListHref({ page: page - 1, search })}
+            to={webhookListHref({ page: page - 1, search })}
             {...(page <= 1 ? disabledLinkProps : {})}
           />
         </PaginationItem>
@@ -43,7 +43,7 @@ export function WebhooksPagination({ page, lastPage, search }: WebhooksPaginatio
           ) : (
             <PaginationItem key={item}>
               <PaginationLink
-                href={webhookListHref({ page: item, search })}
+                to={webhookListHref({ page: item, search })}
                 isActive={item === page}
                 aria-label={`Page ${item}`}
               >
@@ -54,7 +54,7 @@ export function WebhooksPagination({ page, lastPage, search }: WebhooksPaginatio
         )}
         <PaginationItem>
           <PaginationNext
-            href={webhookListHref({ page: page + 1, search })}
+            to={webhookListHref({ page: page + 1, search })}
             {...(page >= lastPage ? disabledLinkProps : {})}
           />
         </PaginationItem>

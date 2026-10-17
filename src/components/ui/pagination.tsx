@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "cn"
-import Link from "next/link"
+import { Link } from "react-router"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
@@ -38,7 +38,7 @@ type PaginationLinkProps = {
 
 // A link styled as a button rather than a Button rendering a link: Base UI's Button
 // adds role="button", which hides the navigation semantics from assistive tech.
-// next/link keeps page changes client-side (a plain <a> reloads the document).
+// The router's Link keeps page changes client-side (a plain <a> reloads the document).
 function PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps) {
   return (
     <Link
