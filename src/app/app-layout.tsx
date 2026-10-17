@@ -1,6 +1,6 @@
 import { Outlet } from "react-router"
 
-import { AppHeader } from "@/components/app-header"
+import { AppHeader } from "./app-header"
 
 /**
  * Shell of the signed-in area. Access is enforced by the API: the header loads

@@ -179,9 +179,9 @@ sequenceDiagram
 ```
 src/
   main.tsx                starts MSW and renders the router
-  app/                    routes (router.tsx), providers, root and app layouts
+  app/                    routes (router.tsx), providers, root and app layouts, header
   pages/                  pages: sign-in, list, edit, 404, render error
-  components/             shadcn/ui (ui/), header, LoadError
+  components/             shadcn/ui (ui/), LoadError
   features/
     auth/                 API, schemas, queries and mutations, LoginForm, UserMenu, SessionExpiryListener
     webhooks/             API, schemas, queries, URL params, table, search, pagination, form
@@ -409,9 +409,9 @@ sequenceDiagram
 ```
 src/
   main.tsx                старт MSW і рендер роутера
-  app/                    маршрути (router.tsx), провайдери, кореневий і робочий layout
+  app/                    маршрути (router.tsx), провайдери, кореневий і робочий layout, шапка
   pages/                  сторінки: вхід, список, редагування, 404, помилка рендеру
-  components/             shadcn/ui (ui/), шапка, LoadError
+  components/             shadcn/ui (ui/), LoadError
   features/
     auth/                 API, схеми, запити й мутації, LoginForm, UserMenu, SessionExpiryListener
     webhooks/             API, схеми, запити, URL-параметри, таблиця, пошук, пагінація, форма
