@@ -104,6 +104,23 @@ describe("HttpClient", () => {
     expect(onSessionExpired).toHaveBeenCalledTimes(2)
   })
 
+  it("ends the session when the retry after a successful rotate gets 401 again", async () => {
+    const { client, onSessionExpired } = createClient()
+    await signIn(client)
+    // The rotate succeeds, but the endpoint keeps rejecting the session.
+    server.use(http.get(apiPath("/v1/me"), () => errors.unauthenticated()))
+    const requestsTo = countRequests()
+
+    await expect(client.request("GET", "/v1/me", { schema: meSchema })).rejects.toBeInstanceOf(
+      SessionExpiredError,
+    )
+
+    expect(requestsTo("/auth/token/rotate")).toBe(1)
+    // The original request and exactly one retry: no second rotate, no loop.
+    expect(requestsTo("/v1/me")).toBe(2)
+    expect(onSessionExpired).toHaveBeenCalledOnce()
+  })
+
   it("refetches the CSRF token on 419 and retries the request once", async () => {
     const { client } = createClient()
     await signIn(client)
