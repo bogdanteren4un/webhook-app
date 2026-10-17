@@ -19,8 +19,6 @@ type HttpClientOptions = {
   /** Prefix for every path: `/api` in the browser, an absolute URL in Node tests. */
   baseUrl: string
   getFingerprint: () => string
-  /** Awaited before each request, e.g. until the mock service worker intercepts requests. */
-  ready?: () => Promise<void>
 }
 
 const CSRF_PROTECTED_METHODS: ReadonlySet<HttpMethod> = new Set(["POST", "PUT"])
@@ -54,8 +52,6 @@ export class HttpClient {
     path: string,
     { schema, auth = true, ...init }: RequestOptions & { schema?: ZodType<T> } = {},
   ): Promise<T | void> {
-    await this.options.ready?.()
-
     let csrfRetried = false
     let authRetried = false
 
