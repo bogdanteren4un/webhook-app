@@ -2,7 +2,7 @@
 
 Тестове завдання Senior Frontend Engineer. Застосунок складається з входу із сесією, що ротується, списку вебхуків із пошуком і пагінацією в URL та сторінки редагування із серверною валідацією. Бекенд реалізовано моком на MSW за контрактом із завдання.
 
-**Стек:** React 19 + Vite 8 (SPA), React Router 7, TypeScript (strict), TanStack Query 5, nuqs 2, react-hook-form + zod 4, shadcn/ui (Base UI), MSW 3, Vitest 5.
+**Стек:** React 19 + Vite 8 (SPA), React Router 7, TypeScript (strict), TanStack Query 5, react-hook-form + zod 4, shadcn/ui (Base UI), MSW 3, Vitest 5.
 
 ## Запуск
 
@@ -75,7 +75,7 @@ MSW стартує в [`src/main.tsx`](src/main.tsx) до першого рен�
 flowchart TB
   Main["src/main.tsx"]
   UI["Сторінки і компоненти<br>src/pages, features/*/components"]
-  State["TanStack Query і nuqs<br>features/*/queries.ts, URL-стан"]
+  State["TanStack Query і URL-стан<br>features/*/queries.ts, search-params.ts"]
   FeatureApi["Типізовані API-функції<br>features/*/api.ts"]
   Client["HttpClient<br>CSRF, 419, 401 і rotate"]
   Mock["MSW: handlers і db у пам'яті сторінки<br>src/mocks"]
@@ -152,7 +152,7 @@ sequenceDiagram
 
 ### Стан списку в URL
 
-- **nuqs.** `page` і `search` читаються через [nuqs](src/features/webhooks/search-params.ts). Невалідний `page` (`abc`, `0`, `-1`, `2.5`) стає першою сторінкою і прибирається з адреси без нового запису в історії. Значення за замовчуванням у URL не пишуться.
+- **`useSearchParams` з React Router.** `page` і `search` читає і пише [`search-params.ts`](src/features/webhooks/search-params.ts): один хук `useWebhookListParams` оновлює обидва параметри однією навігацією. Невалідний `page` (`abc`, `0`, `-1`, `2.5`) стає першою сторінкою і прибирається з адреси без нового запису в історії. Значення за замовчуванням у URL не пишуться, тож у кожного вигляду одна адреса. Окрема бібліотека для двох параметрів тут не потрібна.
 - **Пошук.** Поле оновлюється на кожну клавішу, а в URL значення потрапляє після 300 мс паузи. Зміни URL, що прийшли не з набору («назад», «Clear search»), переносяться в поле. Відлуння власного запису в URL розпізнається і не стирає те, що користувач устиг дописати ([`webhooks-search.tsx`](src/features/webhooks/components/webhooks-search.tsx)).
 - **Пагінація** зроблена посиланнями `Link` з React Router, тож кожна сторінка — окремий запис в історії. Поки вантажиться наступна сторінка, попередня лишається на екрані (`keepPreviousData`).
 - **Редагування** відкривається з параметрами списку в адресі (`/webhooks/7?page=2&search=crm`). Посилання «назад» і перехід після збереження повертають ту саму сторінку і пошук.
@@ -209,6 +209,8 @@ src/
 2. **Невдалий rotate.** Обидва запити падають із `SessionExpiredError`. Наступний захищений запит відхиляється без мережевого виклику, але теж сповіщає слухача.
 3. **Повторний 401.** Rotate вдався, але запит знову отримує 401: клієнт повторює його лише раз, нового rotate не робить і завершує сесію.
 4. **419.** CSRF-токен запитується заново один раз, а PUT повторюється і завершується успішно.
+
+[`src/features/webhooks/search-params.test.ts`](src/features/webhooks/search-params.test.ts) фіксує правила URL-стану: `page` лише додатне ціле, відсутні або невалідні значення стають значеннями за замовчуванням, а посилання не містять значень за замовчуванням.
 
 ## Обмеження і що далі
 
