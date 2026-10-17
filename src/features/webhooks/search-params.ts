@@ -1,4 +1,5 @@
-import { createParser, createSerializer, parseAsString, useQueryStates } from "nuqs"
+import { createParser, createSerializer, parseAsString, useQueryState, useQueryStates } from "nuqs"
+import { useEffect } from "react"
 
 import { routes } from "@/lib/routes"
 
@@ -21,7 +22,19 @@ export const webhookListParsers = {
 
 export function useWebhookListParams() {
   // Every committed change is a history entry, so back/forward walks through them.
-  return useQueryStates(webhookListParsers, { history: "push" })
+  const result = useQueryStates(webhookListParsers, { history: "push" })
+  const [, setParams] = result
+
+  // An invalid `?page=` already reads as page 1; drop it from the address as well,
+  // replacing the entry so "back" does not return to the broken URL.
+  const [rawPage] = useQueryState("page")
+  useEffect(() => {
+    if (rawPage !== null && parseAsPage.parse(rawPage) === null) {
+      void setParams({ page: null }, { history: "replace" })
+    }
+  }, [rawPage, setParams])
+
+  return result
 }
 
 // Default values (page 1, empty search) are left out of the URL.
