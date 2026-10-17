@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlertIcon } from "lucide-react"
-import { useNavigate } from "react-router"
+import { useNavigate, useSearchParams } from "react-router"
 import { useForm } from "react-hook-form"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -21,6 +21,7 @@ export function LoginForm() {
   // no data of a previous session may survive in the cache.
   useClearSessionData()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const signIn = useSignIn()
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -37,9 +38,7 @@ export function LoginForm() {
     }
     // The page stays mounted (hidden) after navigation, so drop the typed password.
     form.reset()
-    // Read on submit rather than via useSearchParams, which keeps the page fully static.
-    const next = new URLSearchParams(window.location.search).get("next")
-    void navigate(safeRedirectPath(next), { replace: true })
+    void navigate(safeRedirectPath(searchParams.get("next")), { replace: true })
   })
 
   return (
