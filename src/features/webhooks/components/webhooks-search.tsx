@@ -1,5 +1,3 @@
-"use client"
-
 import { SearchIcon, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 

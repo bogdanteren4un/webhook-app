@@ -1,5 +1,3 @@
-"use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlertIcon } from "lucide-react"
 import { Link, useNavigate } from "react-router"

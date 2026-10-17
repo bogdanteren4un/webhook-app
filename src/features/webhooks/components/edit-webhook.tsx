@@ -1,5 +1,3 @@
-"use client"
-
 import { ArrowLeftIcon, SearchXIcon } from "lucide-react"
 import { Link, useParams } from "react-router"
 
