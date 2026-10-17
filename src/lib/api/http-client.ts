@@ -16,7 +16,7 @@ export type RequestOptions = {
 }
 
 type HttpClientOptions = {
-  /** Prefix for every path: `/api` in the browser, an absolute URL in Node tests. */
+  /** Prefix for every path: empty in the browser, an absolute origin in Node tests. */
   baseUrl: string
   getFingerprint: () => string
 }

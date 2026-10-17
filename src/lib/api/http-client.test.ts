@@ -14,7 +14,7 @@ const FINGERPRINT = "0123456789abcdef0123456789abcdef"
 
 function createClient() {
   const client = new HttpClient({
-    baseUrl: "http://localhost/api",
+    baseUrl: "http://localhost",
     getFingerprint: () => FINGERPRINT,
   })
   const onSessionExpired = vi.fn()
@@ -41,12 +41,12 @@ function expireMockSession() {
   vi.setSystemTime(Date.now() + SESSION_TTL_MS + 1_000)
 }
 
-/** Counts requests that reach the mock, by path relative to the API base. */
+/** Counts requests that reach the mock, by path. */
 function countRequests() {
   const counts = new Map<string, number>()
   server.events.on("request:start", ({ request }) => {
-    const path = new URL(request.url).pathname.replace(/^\/api/, "")
-    counts.set(path, (counts.get(path) ?? 0) + 1)
+    const { pathname } = new URL(request.url)
+    counts.set(pathname, (counts.get(pathname) ?? 0) + 1)
   })
   return (path: string) => counts.get(path) ?? 0
 }
