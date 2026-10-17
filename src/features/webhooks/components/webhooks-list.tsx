@@ -24,7 +24,7 @@ export function WebhooksList() {
 
   // A new search always starts from the first page.
   const commitSearch = useCallback(
-    (value: string) => void setParams({ search: value, page: null }),
+    (value: string) => setParams({ search: value, page: 1 }),
     [setParams],
   )
   const clearSearch = useCallback(() => commitSearch(""), [commitSearch])

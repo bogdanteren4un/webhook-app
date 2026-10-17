@@ -14,7 +14,7 @@ import { routes } from "@/lib/routes"
 
 /**
  * Shown instead of the whole route tree when rendering throws. It replaces the root
- * layout, so it must not rely on the app providers (query client, nuqs, toasts).
+ * layout, so it must not rely on the app providers (query client, toasts).
  */
 export function RouteErrorPage() {
   const error = useRouteError()

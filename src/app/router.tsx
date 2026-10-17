@@ -12,8 +12,7 @@ import { RootLayout } from "./root-layout"
 
 export const router = createBrowserRouter([
   {
-    // Providers live inside the router: the nuqs adapter and the session
-    // listener navigate through it.
+    // Providers live inside the router: the session listener navigates through it.
     element: <RootLayout />,
     errorElement: <RouteErrorPage />,
     children: [
