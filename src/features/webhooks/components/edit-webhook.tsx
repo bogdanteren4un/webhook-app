@@ -25,10 +25,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { getErrorMessage, isApiError } from "@/lib/api/errors"
 
-import { useWebhookListParams } from "../hooks/use-webhook-list-params"
 import { useWebhook } from "../queries"
 import { webhookIdSchema } from "../schemas"
-import { webhookListHref } from "../search-params"
+import { useWebhookListParams, webhookListHref } from "../search-params"
 import { WebhookEditForm } from "./webhook-edit-form"
 
 const dateFormat = new Intl.DateTimeFormat("en", { dateStyle: "medium" })

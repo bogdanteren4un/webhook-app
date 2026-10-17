@@ -11,7 +11,7 @@ import { getErrorMessage } from "@/lib/api/errors"
 
 import { useWebhookList } from "../queries"
 import type { Webhook, WebhookList } from "../schemas"
-import { useWebhookListParams } from "../hooks/use-webhook-list-params"
+import { useWebhookListParams } from "../search-params"
 import { NoSearchResults, NoWebhooks, PageOutOfRange } from "./webhooks-list-states"
 import { WebhooksPagination } from "./webhooks-pagination"
 import { WebhooksSearch } from "./webhooks-search"
