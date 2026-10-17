@@ -92,7 +92,7 @@ function WebhookEditor({ id, backHref }: { id: number; backHref: string }) {
   )
 }
 
-export function WebhookEditorSkeleton() {
+function WebhookEditorSkeleton() {
   return (
     <Card className="max-w-2xl" aria-busy="true" aria-label="Loading webhook">
       <CardHeader>
